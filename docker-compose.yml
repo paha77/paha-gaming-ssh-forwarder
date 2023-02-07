@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+    ssh-client:
+        user: "1000:0"
+        build:
+            context: .
+            dockerfile: ./Dockerfile-ssh-client
+        command: ["autossh", "-M", "0", "-T", "-N", "-4", "pbktunnel"]
+        environment:
+            SSH_AUTH_SOCK: /ssh-agent/ssh-agent.sock
+        volumes:
+            - ssh-agent:/ssh-agent
+            - .ssh:/home/appuser/.ssh:ro
+        restart: unless-stopped
+volumes:
+    ssh-agent:
+        external: true
+networks:
+    default:
+        name: paha-gaming-ssh-forwarding

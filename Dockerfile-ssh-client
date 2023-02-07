@@ -1,0 +1,7 @@
+FROM alpine:latest
+RUN adduser -u 1000 -D -h /home/appuser appuser1
+RUN apk add --no-cache \
+  openssh-client \
+  autossh \
+  ca-certificates \
+  bash
