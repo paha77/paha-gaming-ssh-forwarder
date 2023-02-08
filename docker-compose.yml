@@ -1,5 +1,23 @@
 version: "3.7"
 services:
+    wireguard-client:
+        image: lscr.io/linuxserver/wireguard:latest
+        cap_add:
+            - NET_ADMIN
+            - SYS_MODULE
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Europe/London
+        volumes:
+            - ./config:/config
+        sysctls:
+            - net.ipv4.conf.all.src_valid_mark=1
+        restart: unless-stopped
+        healthcheck:
+            test: "exit 0" # todo: check server connection
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
     ssh-client:
         user: "1000:0"
         build:
@@ -12,21 +30,10 @@ services:
             - ssh-agent:/ssh-agent
             - .ssh:/home/appuser/.ssh:ro
         restart: unless-stopped
-        labels:
-            - autoheal=true
-        healthcheck:
-            test: [ "CMD", "ssh", "-q", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=no", "-o", "ConnectTimeout=5", "healthcheck", "'exit 0'" ]
-            interval: 1m30s
-            timeout: 10s
-            retries: 3
-            start_period: 40s
-    autoheal:
-        restart: always
-        image: willfarrell/autoheal
-        environment:
-            - AUTOHEAL_CONTAINER_LABEL=all
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
+        network_mode: "service:wireguard-client"
+        depends_on:
+            wireguard-client:
+                condition: service_healthy
 volumes:
     ssh-agent:
         external: true
