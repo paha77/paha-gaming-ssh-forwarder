@@ -24,8 +24,6 @@ services:
             context: .
             dockerfile: ./Dockerfile-ssh-client
         command: ["autossh", "-M", "0", "-T", "-N", "-4", "pbktunnel"]
-        environment:
-            SSH_AUTH_SOCK: /ssh-agent/ssh-agent.sock
         volumes:
             - ssh-agent:/ssh-agent
             - .ssh:/home/appuser/.ssh:ro
