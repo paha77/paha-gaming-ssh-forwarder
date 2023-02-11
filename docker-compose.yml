@@ -32,9 +32,6 @@ services:
         depends_on:
             wireguard-client:
                 condition: service_healthy
-volumes:
-    ssh-agent:
-        external: true
 networks:
     default:
         name: paha-gaming-ssh-forwarding
