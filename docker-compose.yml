@@ -25,7 +25,6 @@ services:
             dockerfile: ./Dockerfile-ssh-client
         command: ["autossh", "-M", "0", "-T", "-N", "-4", "pbktunnel"]
         volumes:
-            - ssh-agent:/ssh-agent
             - .ssh:/home/appuser/.ssh:ro
         restart: unless-stopped
         network_mode: "service:wireguard-client"
