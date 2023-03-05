@@ -15,9 +15,13 @@ services:
             - net.ipv4.conf.all.src_valid_mark=1
         restart: unless-stopped
         healthcheck:
-            test: "exit 0" # todo: check server connection
+            test: "ping -w 5 -c 1 -q 10.13.13.1 > /dev/null" # todo: dynamic ip
+            interval: 10s
+            retries: 5
         extra_hosts:
             - "host.docker.internal:host-gateway"
+        labels:
+            autoheal: true
     ssh-client:
         user: "1000:0"
         build:
@@ -31,6 +35,23 @@ services:
         depends_on:
             wireguard-client:
                 condition: service_healthy
+        healthcheck:
+            test: "ssh -q -o BatchMode=yes  -o StrictHostKeyChecking=no -o ConnectTimeout=5 -o ClearAllForwardings=yes pbktunnel 'exit 0'"
+            interval: 1m
+            retries: 5
+        labels:
+            autoheal: true
+    autoheal:
+        image: willfarrell/autoheal:latest
+        tty: true
+        container_name: autoheal
+        restart: always
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        environment:
+            AUTOHEAL_INTERVAL: 60
+            AUTOHEAL_START_PERIOD: 60
+            # WEBHOOK_URL: "" # todo: telegram message
 networks:
     default:
         name: paha-gaming-ssh-forwarding
