@@ -54,9 +54,9 @@ services:
             - ".env"
         volumes:
             - "./rtorrent/data:/data"
-            - "/media/SSD256GB/public/share2:/downloads"
-            - "/media/SSD256GB/public/share2/torrent2:/downloads/complete"
-            - "/media/SSD256GB/public/share2/.temp:/downloads/temp"
+            - "/media/SSD1TBENCRYPTED-2/torrent/public/share2:/downloads"
+            - "/media/SSD1TBENCRYPTED-2/torrent/public/share2/torrent2:/downloads/complete"
+            - "/media/SSD1TBENCRYPTED-2/torrent/public/share2/.temp:/downloads/temp"
         ulimits:
             nproc: 65535
             nofile:
