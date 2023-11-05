@@ -52,6 +52,10 @@ services:
         env_file:
             - "rtorrent/rtorrent-rutorrent.env"
             - ".env"
+        entrypoint:
+            - "/bin/bash"
+            - "-c"
+            - "echo \"Checking workdir...\"; until [ -f /downloads/.mounted ]; do echo \"Waiting for workdir to be available...\"; sleep 5; done; echo \"Workdir is available, starting...\"; ./init"
         volumes:
             - "./rtorrent/data:/data"
             - "/media/SSD1TBENCRYPTED-2/torrent/public/share2:/downloads"
