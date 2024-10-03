@@ -1,3 +1,4 @@
 *
 !.gitignore
+!rtorrent-rutorrent.env.dist
 rtorrent-rutorrent.env
